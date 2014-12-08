@@ -1,0 +1,21 @@
+Just some notes for myself regarding this project.
+
+So, I was able to understand a few more things today. They are about
+
+a) NCBI taxonomy database: The files associated with this entity arewithin the ExternalContent\taxdump folder. SQL scripts are used to
+		load information from these files into the certain tables (in MySQL), which will be used at program runtime. Run the SQL scripts
+		before beginning a job in order to use them in the program.
+		
+b) blast Database: This database is accessed at the beginning of a job, where the blast executables (located in ExternalContent\blast folder) 
+		use this files. Currently, it is called "nr".
+
+c) Query protein sequence: This is referred to as 'infile' by the program. It is passed as a blast parameter. This file is uploaded by the user
+		while submitting a job. The location to this is available in the 'orders' table.
+		
+The output from the blast module is written to the file referred to by BlastXMLOutput in al.ali.main.Interface.java file. This is passed as
+a parameter to processBlastOutput method in the al.ali.blast.localBlast.java class file. The output file as a result of the AlienG algorithm
+is written to files: 'outfile.txt', and 'only_group1_outfile.txt'. However, I have modified this today as 'Apil_Job_outfile.txt', and 
+'Apil_Job_only_group1_outfile.txt'.
+
+Next-------------------------------
+Tinker around with the interface part, and see if you can wire up the components together to run a complete job!
