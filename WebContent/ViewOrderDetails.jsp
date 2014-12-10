@@ -126,7 +126,8 @@
 			
 			if(res.getProcessStatus().equals("Completed")){
 				//temporarily testing download of a file from different directories.
-				out.println("<td><a href=\"DownloadAlienGServlet\">Download</a></td>");
+				out.println("<td><a href=\"DownloadAlienGServlet\">Download Default Output File.</a>"+" "+
+							 "<a href=\"DownloadGroup1Servlet\">Download Group-1 Output File.</a> </td>");
 				
 			}else{
 				out.println("<td>"+res.getProcessStatus()+"</td>");

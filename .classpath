@@ -16,5 +16,6 @@
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/4"/>
 	<classpathentry kind="lib" path="C:/Users/tamanga13/workspace/Thesis/lib/javamail-1.4.7/mail.jar"/>
+	<classpathentry kind="lib" path="lib/javamail-1.4.7/activation.jar"/>
 	<classpathentry kind="output" path="build/classes"/>
 </classpath>

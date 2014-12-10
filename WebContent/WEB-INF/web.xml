@@ -44,19 +44,19 @@
   	<servlet-class>web.DownloadAlienGServlet</servlet-class>
   </servlet>
   <servlet-mapping>
-  <servlet-name>DownloadAlienGServlet</servlet-name>
-  <url-pattern>/DownloadAlienGServlet</url-pattern>
+  	<servlet-name>DownloadAlienGServlet</servlet-name>
+  	<url-pattern>/DownloadAlienGServlet</url-pattern>
   </servlet-mapping>
 
   <servlet>
   	<description></description>
-  	<display-name>DownloadPhyloGServlet</display-name>
-  	<servlet-name>DownloadPhyloGServlet</servlet-name>
-  	<servlet-class>web.DownloadPhyloGServlet</servlet-class>
+  	<display-name>DownloadGroup1Servlet</display-name>
+  	<servlet-name>DownloadGroup1Servlet</servlet-name>
+  	<servlet-class>web.DownloadGroup1Servlet</servlet-class>
   </servlet>
   <servlet-mapping>
-  <servlet-name>DownloadPhyloGServlet</servlet-name>
-  <url-pattern>/DownloadPhyloGServlet</url-pattern>
+	  <servlet-name>DownloadGroup1Servlet</servlet-name>
+  	<url-pattern>/DownloadGroup1Servlet</url-pattern>
   </servlet-mapping>
 
 </web-app>

@@ -1,3 +1,4 @@
+<%@page import="mail.TLSGmail"%>
 <%@ page import="ui.ali.*" %>
 
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
@@ -21,11 +22,12 @@
         String lastname=request.getParameter("lastname");
         
         if(user.newUser(username) == true)
-            {
-        	user.addUser(username, password_enter,firstname,lastname);        
+        {
+        	  user.addUser(username, password_enter,firstname,lastname);        
             session.setAttribute("message","User  "+ username + " is successfully created!");
+            TLSGmail.sendGmail(username, "Account Info for AlienG", "Your username is: "+username+" and your password is: "+password_enter);
             response.sendRedirect("Message.jsp");
-            }
+        }
         else{
             session.setAttribute("message","Error : This user is already available. \nPlease choose another User Name");
             response.sendRedirect("Message.jsp");

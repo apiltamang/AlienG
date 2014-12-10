@@ -6,6 +6,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
  
 
+
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.ServletOutputStream;
@@ -13,14 +14,14 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
  
-public class DownloadAlienGServlet extends javax.servlet.http.HttpServlet implements
+public class DownloadGroup1Servlet extends javax.servlet.http.HttpServlet implements
         javax.servlet.Servlet {
     static final long serialVersionUID = 1L;
     private static final int BUFSIZE = 4096;
     
     
     public void init() {        
-    
+        
     }
     
     protected void doGet(HttpServletRequest request,
@@ -33,7 +34,7 @@ public class DownloadAlienGServlet extends javax.servlet.http.HttpServlet implem
     	HttpSession session=request.getSession();
     	String userFolderPath=session.getAttribute("orderHomeDir").toString();
     	
-    	String userResultFilePath=userFolderPath+"DEFAULT_OUTPUT_FILE.txt";
+    	String userResultFilePath=userFolderPath+"ONLY_GROUP1_OUTPUT.txt";
     	File file = new File(userResultFilePath);
         int length   = 0;
         ServletOutputStream outStream = response.getOutputStream();

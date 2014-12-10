@@ -1,6 +1,6 @@
 Todo:
-	1) Provide service to retrieve lost password
-	2) Provide link to download outfile_group1
+	1) Provide service to retrieve lost password (Done)
+	2) Provide link to download outfile_group1 (Done)
 	2) direct all output for a job to a file, so that I can look at it later on
 	   as diagnostics...
 	3) Direct Output from python solver to the same file as above for the purpose of

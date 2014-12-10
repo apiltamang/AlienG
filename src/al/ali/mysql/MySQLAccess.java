@@ -334,6 +334,18 @@ public class MySQLAccess {
 		
   }
   
+  public String findUser(Connection connect,String userName) throws SQLException{
+	  PreparedStatement ps = connect.prepareStatement("select Password from users where User=?");
+	  ps.setString(1, userName);
+
+		ResultSet rs = ps.executeQuery();
+		
+		if(!rs.next()) 
+			return null;
+		else 
+			return rs.getString("Password");
+	  
+  }
   public void addUser(Connection connect, String userName, String pass, String firstname, String lastname) throws SQLException{
 	  PreparedStatement ps = connect.prepareStatement("insert into users  values (?, ?,?,?)");
 	  ps.setString(1, userName);
