@@ -38,7 +38,7 @@
 <div class="container">
 
  <%
-	            String user=session.getAttribute("username").toString();
+	           String user=session.getAttribute("username").toString();
     			ArrayList<result> res = result.readResult(user);	            
 %>
 
@@ -51,9 +51,17 @@
 <td><h4>Status</h4></td>
 </tr>
 <%
-for(result i: res){	
-	String printOrdNum=String.format("<td><input type='radio' name='ordNum'"+ 
-							"value='%d'>%d</td>",i.getOrdNum(),i.getOrdNum());
+int count=0;
+for(result i: res){
+	count++;
+	String printOrdNum=null;
+	if(count==res.size())
+		printOrdNum=String.format("<td><input type='radio' name='ordNum'"+ 
+							"value='%d' checked='true'>%d</td>",i.getOrdNum(),i.getOrdNum());
+	else
+		printOrdNum=String.format("<td><input type='radio' name='ordNum'"+ 
+				"value='%d'>%d</td>",i.getOrdNum(),i.getOrdNum());
+	
 	String printUser="<td>" + i.getUser()+ "</td>";
 	
 	if(i.getProcessStatus().equals("In Queue")){
@@ -69,6 +77,9 @@ for(result i: res){
 	//The process has completed. I.e. Both AlienG and PhyloG are completed.		
 	}else if(i.getProcessStatus().equals("Completed")){
 		out.println("<tr class=\"success\">");
+		out.println(printOrdNum);out.println(printUser);
+	}else{
+		out.println("<tr class=\"danger\">");
 		out.println(printOrdNum);out.println(printUser);
 	}
 	

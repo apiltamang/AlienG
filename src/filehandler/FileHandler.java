@@ -7,7 +7,7 @@ import java.io.IOException;
 import java.nio.channels.*;
 
  public class FileHandler {
-	public static File returnFileHandle (String dirPath, String fileName)throws IOException{
+	public static File returnFileHandle (String dirPath, String fileName)throws IOException, Exception{
 		//This method returns a file Object so that
 		//it can be used to write data in.
 		//Checks in the [curr_dir]/dir/file exists.
@@ -34,16 +34,24 @@ import java.nio.channels.*;
 	}//end method returnFileHandler
 	
 	//this readies the directory/ies
-	public static int readyDirectory(String dirName){
-		File dirPath=new File(dirName);
-		if(!dirPath.exists()){
-			System.out.printf("Making new Dir: %s\n",dirPath.toString());
-			dirPath.mkdirs();
-			return 1;
-		}else{
-			System.out.printf("Already exists Dir: %s\n",dirPath.toString());
-			return 0;
-		}//end check/construct 'dir'
+	public static int readyDirectory(String dirName)throws Exception
+	{
+		try
+		{
+			File dirPath=new File(dirName);
+			if(!dirPath.exists()){
+				System.out.printf("Making new Dir: %s\n",dirPath.toString());
+				dirPath.mkdirs();
+				return 1;
+			}else{
+				System.out.printf("Already exists Dir: %s\n",dirPath.toString());
+				return 0;
+			}//end check/construct 'dir'
+		}
+		catch(Exception e)
+		{
+			throw new Exception("Error readying directory. \n Exception Message: \n"+e.getMessage()+"\n");
+		}
 
 	}
 
@@ -78,10 +86,8 @@ import java.nio.channels.*;
 	    {
 	    	success=true;
 	    	
-	    	System.out.println("Error copying file..."+fileName);
-	    	System.out.println("Src dir: "+srcDir);
-	    	System.out.println("Dest dir: "+dstDir);
-	    	throw new Exception("Error copying file..."+fileName);
+	    	throw new Exception("Error copying file..."+fileName+
+	    			" from \n "+srcDir+" ---> "+dstDir+".\n Exception Message: \n"+e.getMessage()+"\n");
 	    }
 	    
 	    finally {

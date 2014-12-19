@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.sql.Connection;
@@ -27,50 +28,126 @@ public class Interface {
 		 * been retrieved from the user through the GUI
 		 * part of the application.
 		 *-------------------------------------------*/
-		boolean loopAgain=true;
-		while(loopAgain){ 
-			//go in an infinite loop to see if any item
-			//is added in the database
-			//TODO: Change this to a more elegant form
-			// of solution
-			
-			Config anOrder = MySQLAccess.readOneRequest("NewOrder", -9999);
-			System.out.println("One Order read!");
-			/*-------------------------------------------*/
-			/*
-			 * Skipping the java solver, because I can't get the
-			 * outputs to match with the python's results
-			Interface mySoln=new Interface();
-			 
-			 boolean success=mySoln.executeMainProcess(anOrder);
-			
-			 if(success){
-				 System.out.println("Done.");
-				 System.exit(0);
-			 }
-			 
-			 /* ----------------------------------------*/
-			
-			 /* ----------------------------------------
-			  * read to see if next order is available.
-			  * if(nextOrder)
-			  * {
-			  * 	loopAgain=true;
-			  * }
-			  * else
-			  * {
-			  * 	loopAgain=false;
-			  * }
-			  * 
-			  *----------------------------------------- */
-			 
-			/*
-			 * Instead use the python solvers themselves
-			 */
-			new PythonSolver().solveRequest(anOrder);
-			loopAgain=false;
-			 
+		
+		/*
+		 * masterWriter writes:
+		 * 	- about a new found order, 
+		 *  - whether it was successfully executed, and
+		 *  - whether an exception happened on solving that order.
+		 *  
+		 *   The information for all orders are written to the same file: "MASTER_CONSOLE_OUTPUT.txt"
+		 */
+		
+		/*
+		 * consoleWriter writes:
+		 *  - details about each order's solution process
+		 *  - whether any exception occurred
+		 *  - nature of the exception
+		 *  
+		 *  The information is written in a seperate file, identified by: "CONSOLE_OUTPUT_JOB_%d.txt"
+		 *  where %d: Job#
+		 */
+		
+		PrintWriter masterWriter=null;
+
+		File masterConsole=new File("MASTER_CONSOLE_OUTPUT.txt");
+		if(masterConsole.exists())
+		{
+			masterConsole.delete();
+			masterConsole.createNewFile();
+		}else
+		{
+			masterConsole.createNewFile();
 		}
+		
+		
+		//go in an infinite loop to see if any item
+		//is added in the database. If yes, read it...
+
+		while(true){ 
+			PrintWriter consoleWriter=null;
+			try
+			{
+				Thread.sleep(10000);  //sleep for ten seconds
+		
+				Config anOrder = MySQLAccess.readOneRequest("NewOrder", -9999);
+				if(anOrder ==null)
+					continue;
+				/*
+				 * Define a file writing stream to direct all output to a file.
+				 * Will be useful for tracking jobs as they are done.
+				 */
+				masterWriter=new PrintWriter(new BufferedWriter(new FileWriter(masterConsole,true)));
+				masterWriter.write("New Order Found: "+anOrder.getOrdNum()+"\n");
+				
+				
+				String jobID=String.format("CONSOLE_OUTPUT_JOB_%d.txt",anOrder.getOrdNum());
+				consoleWriter=new PrintWriter(jobID,"UTF-8");
+				
+				consoleWriter.write("One Order read...\n");
+				
+				consoleWriter.write("Order details: \n");
+				
+				/*---- Prepare to write order details to file--*/			
+				blastObj configFile=new localBlast()
+									.readConfigFromUI(anOrder);
+				consoleWriter.write(configFile.toString()+"\n");
+				/*-------------------------------------------*/
+				/*
+				 * Skipping the java solver, because I can't get the
+				 * outputs to match with the python's results
+				 
+				 boolean success=new Interface().
+				 					executeMainProcess(anOrder);
+	     	     *Instead use the python solver
+				 *-------------------------------------------*/
+				boolean success=new PythonSolver(consoleWriter)
+									.solveRequest(anOrder);
+				
+				if(success)
+				{
+					masterWriter.write("Order successfully completed.\n");
+					//update database table to mark completion of the job.
+					MySQLAccess.updateOrdersTable("processStatus","Completed",anOrder.getOrdNum());
+					consoleWriter.write("Updated the MYSQL Orders Table, Order No: "+anOrder.getOrdNum()+"as: COMPLETED. \n");
+					
+					//email the user to download the output file.
+					mail.TLSGmail.sendGmail(anOrder.getUser(), "AlienG Completed", "Please download");
+					consoleWriter.write("Sent email about job status to user: "+anOrder.getUser()+"\n");
+	
+				}
+				else
+				{
+					String errOut=String.format("Order FAILED to complete successfully. Please see corresponding CONSOLE_OUTPUT_JOB_%d.txt file.\n",anOrder.getOrdNum());
+					masterWriter.write(errOut);
+					//update database table to mark completion of the job.
+					MySQLAccess.updateOrdersTable("processStatus","Error",anOrder.getOrdNum());
+					consoleWriter.write("Updated the MYSQL Orders Table, Order No: "+anOrder.getOrdNum()+"as: ERROR.\n");
+					
+					//email the user to download the output file.
+					mail.TLSGmail.sendGmail(anOrder.getUser(), "Error in job", "Please report to admin.");
+					consoleWriter.write("Sent email about job status to user: "+anOrder.getUser()+"\n");
+					
+				}//end if (success)
+			}
+			catch(Exception e)
+			{
+				e.printStackTrace(masterWriter);
+				
+			}
+			finally
+			{
+				if(!(consoleWriter==null))
+					consoleWriter.close();
+				
+				if(!(masterWriter==null))
+					masterWriter.close();
+				 
+			}
+			 
+		}//end while (//goto the next job, if there's one available)
+		
+		
 	}//end main
 	//=============================================================================================================
 	public boolean executeMainProcess(Config co) throws Exception{

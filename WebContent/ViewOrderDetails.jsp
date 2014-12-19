@@ -38,13 +38,16 @@
 <div class="container">
    
 <% 
-	Integer ordNum=Integer.parseInt(request.getParameter("ordNum"));
     
-	session.setAttribute("ordNum", ordNum);
-    Config res=MySQLAccess.readOneRequest("OrderDetails", ordNum);
+     Integer ordNum=Integer.parseInt(request.getParameter("ordNum"));
     
-    session.setAttribute("orderHomeDir",res.getOrderHomeDir());
-    System.out.println("orderHomeDir: ViewOrderDetails.jsp: "+res.getOrderHomeDir());
+     session.setAttribute("ordNum", ordNum);
+     Config res=MySQLAccess.readOneRequest("OrderDetails", ordNum);
+    
+     session.setAttribute("orderHomeDir",res.getOrderHomeDir());
+     System.out.println("orderHomeDir: ViewOrderDetails.jsp: "+res.getOrderHomeDir());
+
+
 %>
 <table class="table table-hover table-bordered">
 	<tr>

@@ -621,22 +621,26 @@ public class MySQLAccess {
  
   
 	//=============================================================================================================
-	public static Config readOneRequest(String type,int ordNum) throws Exception{
-		Config res;
-		MySQLAccess sql = new MySQLAccess();
-	    Connection connect=null;
-	    connect = sql.newConnection();
-	    
-	    res = sql.getOnerequest(connect,type,ordNum);
-	    //The -ve integer will issue a runtime error if I try to get a NewOrder request.
-	    
-	    if (res == null)
-	    	;
-	    else{
-	    	System.out.println("na baba");
-	    }
-		
-		return res;
+	public static Config readOneRequest(String type,int ordNum) throws Exception
+	{
+		Connection connect=null;
+		try{
+			Config res;
+			MySQLAccess sql = new MySQLAccess();		    
+		    connect = sql.newConnection();
+		    
+		    res = sql.getOnerequest(connect,type,ordNum);
+		    //The -ve integer will issue a runtime error if I try to get a NewOrder request.
+
+		    connect.close();
+			return res;
+		}
+		catch(Exception e)
+		{
+			if(!(connect==null))
+				connect.close();
+			throw new Exception("Exception occured while reading a request. \n Exception message: \n"+e.getMessage()+"\n");
+		}
 	}
 
 } 
